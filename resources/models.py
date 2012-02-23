@@ -77,11 +77,10 @@ class Page(Resource):
     show_title = models.BooleanField(default=True)
     meta_summary = models.TextField(blank=True)
     text = models.TextField(blank=True)
-    template = models.CharField(max_length=100, blank=True)
-    inherit_template = models.BooleanField(default=True)
+    template = models.CharField(max_length=100, blank=True, help_text="Inherit if empty")
     
     def get_template(self):
-        if self.inherit_template:
+        if self.template == "":
             return self.parent.get_object().get_template()
         return self.template
     
