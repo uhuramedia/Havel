@@ -1,7 +1,9 @@
 from django.contrib import admin
-from resources.models import ResourceProperty, Page, Weblink, Resource
+from resources.models import ResourceProperty, Page, Weblink, Resource,\
+    ResourceTranslation
 from mptt.admin import MPTTModelAdmin, FeinCMSModelAdmin
 import datetime
+from django.conf import settings
 
 class ResourcePropertyInline(admin.TabularInline):
     model = ResourceProperty
@@ -13,12 +15,16 @@ class ResourceAdmin(FeinCMSModelAdmin):
                     'created', 
                     'modified', 
                     'is_published', 
+                    'translation_pool',
+                    'in_menu',
+                    'language',
                     'author')
-    list_filter = ('is_published', 'author')
+    list_filter = ('is_published', 'in_menu', 'author', 'language')
     inlines = (ResourcePropertyInline,)
-    actions = ('make_published', 'make_unpublished')
+    actions = ('make_published', 'make_unpublished', 'link')
+    prepopulated_fields = {'slug': ('title',)}
     
-    def __init__(self,*args,**kwargs):
+    def __init__(self, *args, **kwargs): 
         super(ResourceAdmin, self).__init__(*args, **kwargs)
         self.list_display_links = (None, )
     
@@ -47,7 +53,12 @@ class ResourceAdmin(FeinCMSModelAdmin):
                             is_published=False, published=None)
 
     make_unpublished.short_description = "Mark selected resources as unpublished"
-
+    
+    def link(self, request, queryset):
+        rt = ResourceTranslation.objects.create()
+        for obj in queryset:
+            obj.translation_pool = rt
+            obj.save()
 
 admin.site.register(Resource, ResourceAdmin)
 
