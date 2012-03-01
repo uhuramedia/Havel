@@ -1,0 +1,8 @@
+{% load i18n %}
+{% for t in translations %}
+    <li>
+        <a href="{{ t.url }}" title="{% trans "language" %} {{ t.language}}">
+            {{ t.language }}
+        </a>
+    </li>
+{% endfor %}
