@@ -24,15 +24,18 @@ def show_menu_below(context, page_pk):
 @register.inclusion_tag('resources/translations.html', takes_context=True)
 def translations(context):
     site = Site.objects.get_current()
-    page = context['page']
+    page = context.get('page', None)
     translations = []
     for l in settings.LANGUAGES:
         code = subdomain = l[0]
-        v = page.translation_pool.get_by_language(code)
-        if v is not None:
-            path = v.get_absolute_url()
+        if page is None:
+            path = context['request'].path
         else:
-            path = "/"
+            v = page.translation_pool.get_by_language(code)
+            if v is not None:
+                path = v.get_absolute_url()
+            else:
+                path = "/"
         if code == settings.LANGUAGE_CODE:
             subdomain = "www"
         translations.append({'code': code, 
