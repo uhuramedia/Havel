@@ -24,6 +24,7 @@ def show_menu_below(context, page_pk):
 @register.inclusion_tag('resources/translations.html', takes_context=True)
 def translations(context):
     site = Site.objects.get_current()
+    language = translation.get_language()
     page = context.get('page', None)
     translations = []
     for l in settings.LANGUAGES:

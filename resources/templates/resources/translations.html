@@ -1,6 +1,6 @@
 {% load i18n %}
 {% for t in translations %}
-    <li>
+    <li class="{% if t.code == language %}active {% endif %}{{ t.code }}">
         <a href="{{ t.url }}" title="{% trans "language" %} {{ t.language}}">
             {{ t.language }}
         </a>
