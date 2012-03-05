@@ -41,7 +41,7 @@ def translations(context):
             subdomain = "www"
         translations.append({'code': code, 
                              'url': "http://%s.%s%s" % (subdomain,
-                                                        site.domain,
+                                                        site.domain.replace("www.", ""),
                                                         path),
                              'language': l[1]})
     return locals()
