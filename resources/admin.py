@@ -1,12 +1,75 @@
-from django.contrib import admin
-from resources.models import ResourceProperty, Page, Weblink, Resource,\
-    ResourceTranslation
-from mptt.admin import MPTTModelAdmin, FeinCMSModelAdmin
-import datetime
 from django.conf import settings
+from django.contrib import admin
+from django.core import urlresolvers
+from django.utils.translation import ugettext_lazy as _
+from feincms.admin.tree_editor import TreeEditor as _feincms_tree_editor
+from mptt.admin import MPTTModelAdmin
+from mptt.forms import MPTTAdminForm, TreeNodeChoiceField
+from resources.models import ResourceProperty, Page, Weblink, Resource, \
+    ResourceTranslation
+import datetime
 
 class ResourcePropertyInline(admin.TabularInline):
     model = ResourceProperty
+    
+    
+class FeinCMSModelAdmin(_feincms_tree_editor):
+    """
+    A ModelAdmin to add changelist tree view and editing capabilities.
+    Requires FeinCMS to be installed.
+    """
+
+    form = MPTTAdminForm
+
+    def _actions_column(self, obj):
+        actions = super(FeinCMSModelAdmin, self)._actions_column(obj)
+        if hasattr(obj, 'get_absolute_url'):
+            actions.insert(0,
+                u'<a href="%s" title="%s" target="_blank"><img src="%simg/admin/selector-search.gif" alt="%s" /></a>' % (
+                    obj.get_absolute_url(),
+                    _('View on site'),
+                    settings.ADMIN_MEDIA_PREFIX,
+                    _('View on site')))
+        actions.insert(0,
+            u'<a href="%s?%s=%s" title="%s">%s</a>' % (
+                urlresolvers.reverse('admin:resources_page_add'),                                                                                         
+                self.model._mptt_meta.parent_attr,
+                obj.pk,
+                _('Add page'),
+                _('Add page')))
+        actions.insert(0,
+            u'<a href="%s?%s=%s" title="%s">%s</a>' % (
+                urlresolvers.reverse('admin:resources_weblink_add'),                                                                                         
+                self.model._mptt_meta.parent_attr,
+                obj.pk,
+                _('Add weblink'),
+                _('Add weblink')))
+        return actions
+
+    def delete_selected_tree(self, modeladmin, request, queryset):
+        """
+        Deletes multiple instances and makes sure the MPTT fields get recalculated properly.
+        (Because merely doing a bulk delete doesn't trigger the post_delete hooks.)
+        """
+        n = 0
+        for obj in queryset:
+            obj.delete()
+            n += 1
+        self.message_user(request, _("Successfully deleted %s items.") % n)
+
+    def get_actions(self, request):
+        actions = super(FeinCMSModelAdmin, self).get_actions(request)
+        if 'delete_selected' in actions:
+            actions['delete_selected'] = (self.delete_selected_tree, 'delete_selected', _("Delete selected %(verbose_name_plural)s"))
+        return actions
+
+
+def page_or_else(resource, code):
+    v = resource.get_translated_version(code)
+    if v is None:
+        return "-"
+    return v
+
 
 class ResourceAdmin(FeinCMSModelAdmin):
     list_display = ('title', 
