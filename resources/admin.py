@@ -28,6 +28,9 @@ class ResourceAdmin(FeinCMSModelAdmin):
         super(ResourceAdmin, self).__init__(*args, **kwargs)
         self.list_display_links = (None, )
     
+    def has_add_permission(self, request):
+        return False
+    
     def title_link(self,obj):
         return u'<a href="%s">%s</a>' % (obj.get_edit_link(),
                                          obj.content_type)
