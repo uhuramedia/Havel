@@ -123,11 +123,26 @@ class Weblink(Resource):
         return self.target
 
 
+def template_choices():
+    try:
+        return settings.RESOURCES_TEMPLATES
+    except AttributeError:
+        pass
+
+def template_default():
+    try:
+        return settings.RESOURCES_TEMPLATES[settings.RESOURCES_TEMPLATE_DEFAULT][0]
+    except AttributeError:
+        pass
+
 class Page(Resource):
     show_title = models.BooleanField(default=True)
     meta_summary = models.TextField(blank=True)
     text = models.TextField(blank=True)
-    template = models.CharField(max_length=100, blank=True, help_text="Inherit if empty")
+    template = models.CharField(max_length=100, blank=True, 
+                                choices=template_choices(),
+                                default=template_default(),
+                                help_text="Inherit if empty")
     
     def get_template(self):
         if self.template == "":
