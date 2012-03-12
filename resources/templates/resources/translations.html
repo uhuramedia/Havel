@@ -2,7 +2,7 @@
 {% for t in translations %}
     <li class="{% if t.code == language %}active {% endif %}{{ t.code }}">
         <a href="{{ t.url }}" title="{% trans "language" %} {{ t.language}}">
-            {{ t.language }}
+            {{ t.label }}
         </a>
     </li>
 {% endfor %}

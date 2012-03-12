@@ -22,7 +22,7 @@ def show_menu_below(context, page_pk):
             'pages': pages}
 
 @register.inclusion_tag('resources/translations.html', takes_context=True)
-def translations(context):
+def translations(context, label_type="full"):
     site = Site.objects.get_current()
     language = translation.get_language()
     page = context.get('page', None)
@@ -39,9 +39,16 @@ def translations(context):
                 path = "/"
         if code == settings.LANGUAGE_CODE:
             subdomain = "www"
+        if label_type == "code1":
+            label = l[0][0].upper()
+        elif label_type == "code":
+            label = l[0].upper()
+        else:
+            label = l[1]
         translations.append({'code': code, 
                              'url': "http://%s.%s%s" % (subdomain,
                                                         site.domain.replace("www.", ""),
                                                         path),
-                             'language': l[1]})
+                             'language': l[1],
+                             'label': label})
     return locals()
