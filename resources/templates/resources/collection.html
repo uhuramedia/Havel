@@ -1,0 +1,13 @@
+{% for item in collection.items %}
+{% with resource=item.resource %}
+    <li>
+        <a 
+        href="{{ resource.resolve }}"
+        {% if page.pk == resource.pk %}class="active"{% endif %}
+        title="{{ resource.title }}"
+        >
+            {{ resource.get_menu_title }}
+        </a>
+    </li>
+{% endwith %}
+{% endfor %}
