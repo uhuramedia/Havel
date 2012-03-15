@@ -1,5 +1,5 @@
 from django import template
-from resources.models import Page
+from resources.models import Page, ResourceCollection
 from django.utils import translation
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -20,6 +20,12 @@ def show_menu_below(context, page_pk):
                 filter(in_menu=True, language=lang)
     return {'page': context.get('page', None),
             'pages': pages}
+
+@register.inclusion_tag('resources/collection.html', takes_context=True)
+def page_collection(context, collection_slug):
+    collection = ResourceCollection.objects.get(name=collection_slug)
+    return {'page': context.get('page', None),
+            'collection': collection}
 
 @register.inclusion_tag('resources/translations.html', takes_context=True)
 def translations(context, label_type="full"):

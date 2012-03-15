@@ -108,6 +108,22 @@ class ResourceProperty(models.Model):
     
     class Meta:
         unique_together = ('resource', 'key')
+        
+        
+class ResourceCollection(models.Model):
+    name = models.SlugField(max_length=100, unique=True)
+    
+    def __unicode__(self):
+        return self.name
+    
+    def items(self):
+        return self.resourcecollectionitem_set.all().select_related().order_by('sort')
+    
+    
+class ResourceCollectionItem(models.Model):
+    collection = models.ForeignKey(ResourceCollection)
+    resource = models.ForeignKey(Resource)
+    sort = models.PositiveSmallIntegerField()
     
 
 class Weblink(Resource):
