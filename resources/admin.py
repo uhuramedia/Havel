@@ -131,6 +131,24 @@ admin.site.register(Resource, ResourceAdmin)
 class PageAdmin(MPTTModelAdmin):
     list_display = ('title', 'parent', 'slug', 'created', 'author', 'get_absolute_url')
     inlines = (ResourcePropertyInline,)
+    prepopulated_fields = {'slug': ('title',)}
+
+    fieldsets = (
+        (None, {
+                'fields': ('parent', ('title', 'slug'), 'language', 'text', 'template')
+        }),
+        ('Settings', {
+            'fields': ('in_menu', 'noindex', 'is_published', 'show_title')
+        }),
+        ('Timing', {
+            'classes': ('collapse',),
+            'fields': ('published', 'unpublished')
+        }),
+         ('Other', {
+            'classes': ('collapse',),
+            'fields': ('meta_summary',)
+         }),
+    )
 
 admin.site.register(Page, PageAdmin)
 admin.site.register(Weblink)
