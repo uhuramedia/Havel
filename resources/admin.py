@@ -11,8 +11,8 @@ import datetime
 
 class ResourcePropertyInline(admin.TabularInline):
     model = ResourceProperty
-    
-    
+
+
 class FeinCMSModelAdmin(_feincms_tree_editor):
     """
     A ModelAdmin to add changelist tree view and editing capabilities.
@@ -32,14 +32,14 @@ class FeinCMSModelAdmin(_feincms_tree_editor):
                     _('View on site')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
-                urlresolvers.reverse('admin:resources_page_add'),                                                                                         
+                urlresolvers.reverse('admin:resources_page_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
                 _('Add page'),
                 _('Add page')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
-                urlresolvers.reverse('admin:resources_weblink_add'),                                                                                         
+                urlresolvers.reverse('admin:resources_weblink_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
                 _('Add weblink'),
@@ -72,12 +72,12 @@ def page_or_else(resource, code):
 
 
 class ResourceAdmin(FeinCMSModelAdmin):
-    list_display = ('title', 
-                    'title_link', 
+    list_display = ('title',
+                    'title_link',
                     'get_absolute_url',
-                    'created', 
-                    'modified', 
-                    'is_published', 
+                    'created',
+                    'modified',
+                    'is_published',
                     'translation_pool',
                     'in_menu',
                     'language',
@@ -86,20 +86,20 @@ class ResourceAdmin(FeinCMSModelAdmin):
     inlines = (ResourcePropertyInline,)
     actions = ('make_published', 'make_unpublished', 'link')
     prepopulated_fields = {'slug': ('title',)}
-    
-    def __init__(self, *args, **kwargs): 
+
+    def __init__(self, *args, **kwargs):
         super(ResourceAdmin, self).__init__(*args, **kwargs)
-        self.list_display_links = (None, )
-    
+        self.list_display_links = (None,)
+
     def has_add_permission(self, request):
         return False
-    
-    def title_link(self,obj):
+
+    def title_link(self, obj):
         return u'<a href="%s">%s</a>' % (obj.get_edit_link(),
                                          obj.content_type)
     title_link.allow_tags = True
     title_link.short_description = "Edit"
-    
+
     def make_do(self, request, queryset, label, *args, **make):
         rows_updated = queryset.update(**make)
         if rows_updated == 1:
@@ -107,19 +107,19 @@ class ResourceAdmin(FeinCMSModelAdmin):
         else:
             message_bit = "%s resources were" % rows_updated
         self.message_user(request, "%s successfully %s." % (message_bit, label))
-    
+
     def make_published(self, request, queryset):
-        return self.make_do(request, queryset, "marked as published", 
+        return self.make_do(request, queryset, "marked as published",
                             is_published=True, published=datetime.datetime.now())
 
     make_published.short_description = "Mark selected resources as published"
-    
+
     def make_unpublished(self, request, queryset):
         return self.make_do(request, queryset, "marked as unpublished",
                             is_published=False, published=None)
 
     make_unpublished.short_description = "Mark selected resources as unpublished"
-    
+
     def link(self, request, queryset):
         rt = ResourceTranslation.objects.create()
         for obj in queryset:
@@ -146,9 +146,10 @@ class PageAdmin(MPTTModelAdmin):
         }),
          ('Other', {
             'classes': ('collapse',),
-            'fields': ('meta_summary',)
+            'fields': ('menu_title', 'meta_summary',)
          }),
     )
+
 
 admin.site.register(Page, PageAdmin)
 admin.site.register(Weblink)

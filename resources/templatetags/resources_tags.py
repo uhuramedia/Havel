@@ -21,11 +21,48 @@ def show_menu_below(context, page_pk):
     return {'page': context.get('page', None),
             'pages': pages}
 
+
+@register.inclusion_tag('resources/list.html', takes_context=True)
+def breadcrumbs(context, page=None):
+    lang = translation.get_language()
+    page = page or context.get('page', None)
+    pages = page.get_ancestors(include_self=True).\
+                filter(in_menu=True, language=lang)
+    return {'page': context.get('page', None),
+            'pages': pages}
+
+
+@register.inclusion_tag('resources/menu.html', takes_context=True)
+def show_menu_at_level(context, level, page=None):
+    #      0
+    #   1     1
+    #  2 2   2 2
+    lang = translation.get_language()
+    target = page = page or context.get('page', None)
+
+    if page.level > level:
+        # if this page sits deeper than target level
+        target = page.get_ancestors().filter(level=level)[0]
+    elif page.level < level:
+        # if this page sits higher than target level
+        target = page.get_descendants().filter(level=level)[0]
+
+    pages = Page.objects.none()
+    if target:
+        pages = target.get_siblings(include_self=True).\
+                    filter(in_menu=True, language=lang)
+
+    return {'page': context.get('page', None),
+            'pages': pages}
+
 @register.inclusion_tag('resources/collection.html', takes_context=True)
 def page_collection(context, collection_slug):
-    collection = ResourceCollection.objects.get(name=collection_slug)
-    return {'page': context.get('page', None),
-            'collection': collection}
+    try:
+        collection = ResourceCollection.objects.get(name=collection_slug)
+        return {'page': context.get('page', None),
+                'collection': collection}
+    except ResourceCollection.DoesNotExist:
+        pass
 
 @register.inclusion_tag('resources/translations.html', takes_context=True)
 def translations(context, label_type="full"):
@@ -51,7 +88,7 @@ def translations(context, label_type="full"):
             label = l[0].upper()
         else:
             label = l[1]
-        translations.append({'code': code, 
+        translations.append({'code': code,
                              'url': "http://%s.%s%s" % (subdomain,
                                                         site.domain.replace("www.", ""),
                                                         path),
