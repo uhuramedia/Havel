@@ -72,7 +72,7 @@ def page_or_else(resource, code):
 
 
 class ResourceAdmin(FeinCMSModelAdmin):
-    list_display = ('title',
+    list_display = ('__unicode__',
                     'title_link',
                     'get_absolute_url',
                     'created',
@@ -98,27 +98,27 @@ class ResourceAdmin(FeinCMSModelAdmin):
         return u'<a href="%s">%s</a>' % (obj.get_edit_link(),
                                          obj.content_type)
     title_link.allow_tags = True
-    title_link.short_description = "Edit"
+    title_link.short_description = _("Edit")
 
     def make_do(self, request, queryset, label, *args, **make):
         rows_updated = queryset.update(**make)
         if rows_updated == 1:
-            message_bit = "1 resource was"
+            message_bit = _("1 resource was")
         else:
-            message_bit = "%s resources were" % rows_updated
-        self.message_user(request, "%s successfully %s." % (message_bit, label))
+            message_bit = _("%s resources were" % rows_updated)
+        self.message_user(request, _("%(num)s successfully %(action)s." % {'num': message_bit, 'action': label}))
 
     def make_published(self, request, queryset):
-        return self.make_do(request, queryset, "marked as published",
+        return self.make_do(request, queryset, _("marked as published"),
                             is_published=True, published=datetime.datetime.now())
 
-    make_published.short_description = "Mark selected resources as published"
+    make_published.short_description = _("Mark selected resources as published")
 
     def make_unpublished(self, request, queryset):
-        return self.make_do(request, queryset, "marked as unpublished",
+        return self.make_do(request, queryset, _("marked as unpublished"),
                             is_published=False, published=None)
 
-    make_unpublished.short_description = "Mark selected resources as unpublished"
+    make_unpublished.short_description = _("Mark selected resources as unpublished")
 
     def link(self, request, queryset):
         rt = ResourceTranslation.objects.create()
@@ -126,10 +126,12 @@ class ResourceAdmin(FeinCMSModelAdmin):
             obj.translation_pool = rt
             obj.save()
 
+    link.short_description = _("Link these resources as translation")
+
 admin.site.register(Resource, ResourceAdmin)
 
 class PageAdmin(MPTTModelAdmin):
-    list_display = ('title', 'parent', 'slug', 'created', 'author', 'get_absolute_url')
+    list_display = ('__unicode__', 'parent', 'slug', 'created', 'author', 'get_absolute_url')
     inlines = (ResourcePropertyInline,)
     prepopulated_fields = {'slug': ('title',)}
 
@@ -138,7 +140,7 @@ class PageAdmin(MPTTModelAdmin):
                 'fields': ('parent', ('title', 'slug'), 'language', 'text', 'template')
         }),
         ('Settings', {
-            'fields': ('in_menu', 'noindex', 'is_published', 'show_title')
+            'fields': ('in_menu', 'is_published', 'show_title')
         }),
         ('Timing', {
             'classes': ('collapse',),
@@ -146,7 +148,7 @@ class PageAdmin(MPTTModelAdmin):
         }),
          ('Other', {
             'classes': ('collapse',),
-            'fields': ('menu_title', 'meta_summary',)
+            'fields': ('menu_title', 'meta_summary', 'noindex')
          }),
     )
 

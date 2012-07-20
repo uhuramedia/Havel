@@ -40,12 +40,15 @@ def show_menu_at_level(context, level, page=None):
     lang = translation.get_language()
     target = page = page or context.get('page', None)
 
-    if page.level > level:
-        # if this page sits deeper than target level
-        target = page.get_ancestors().filter(level=level)[0]
-    elif page.level < level:
-        # if this page sits higher than target level
-        target = page.get_descendants().filter(level=level)[0]
+    try:
+        if page.level > level:
+            # if this page sits deeper than target level
+            target = page.get_ancestors().filter(level=level)[0]
+        elif page.level < level:
+            # if this page sits higher than target level
+            target = page.get_descendants().filter(level=level)[0]
+    except IndexError:
+        target = None
 
     pages = Page.objects.none()
     if target:

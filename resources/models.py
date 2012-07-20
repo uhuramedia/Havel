@@ -1,12 +1,14 @@
-from django.db import models
-from mptt.models import MPTTModel, TreeForeignKey
-from mptt.managers import TreeManager
-import datetime
-from django.contrib.auth.models import User
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.core import urlresolvers
+# -*- coding: UTF-8 -*-
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.core import urlresolvers
+from django.db import models
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.utils.translation import ugettext_lazy as _
+from mptt.managers import TreeManager
+from mptt.models import MPTTModel, TreeForeignKey
+import datetime
 
 class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
@@ -29,13 +31,13 @@ class Resource(MPTTModel):
 
     author = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
-    translation_pool = models.ForeignKey("ResourceTranslation", editable=False)
+    translation_pool = models.ForeignKey("ResourceTranslation", verbose_name=_("Translation pool"), editable=False)
     language = models.CharField(max_length=5, db_index=True,
                                 choices=settings.LANGUAGES,
                                 default=settings.LANGUAGES[0])
 
     def __unicode__(self):
-        return self.title
+        return self.menu_title or self.title
 
     def get_absolute_url(self):
         if self.parent is not None:
@@ -77,6 +79,8 @@ class Resource(MPTTModel):
 
 
     class Meta:
+        verbose_name = _('Resource')
+        verbose_name_plural = _('Resources')
         unique_together = (('translation_pool', 'language'),
                            ('slug', 'language'))
 
@@ -86,7 +90,7 @@ class ResourceTranslation(models.Model):
     by putting them in the same translation pool"""
 
     def __unicode__(self):
-        return " ".join(["[%s] %s" % (obj.language, obj.title) for obj in self.resource_set.all()])
+        return " ".join(["[%s] %s" % (obj.language, obj) for obj in self.resource_set.all()])
 
     def get_versions(self):
         try:
@@ -99,6 +103,10 @@ class ResourceTranslation(models.Model):
             return Resource.objects.get(translation_pool=self, language=language)
         except Resource.DoesNotExist:
             pass
+
+    class Meta:
+        verbose_name = _(u'Resource translation')
+        verbose_name_plural = _(u'Resource translations')
 
 
 class ResourceProperty(models.Model):
@@ -118,6 +126,10 @@ class ResourceCollection(models.Model):
 
     def items(self):
         return self.resourcecollectionitem_set.all().select_related().order_by('sort')
+
+    class Meta:
+        verbose_name = _(u'Resource collection')
+        verbose_name_plural = _(u'Resource collections')
 
 
 class ResourceCollectionItem(models.Model):
@@ -159,6 +171,10 @@ class Page(Resource):
                                 choices=template_choices(),
                                 default=template_default(),
                                 help_text="Inherit if empty")
+
+    class Meta:
+        verbose_name = _(u'Page')
+        verbose_name_plural = _(u'Page')
 
     def get_template(self):
         if self.template == "":
