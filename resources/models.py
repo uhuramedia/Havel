@@ -34,7 +34,7 @@ class Resource(MPTTModel):
     translation_pool = models.ForeignKey("ResourceTranslation", verbose_name=_("Translation pool"), editable=False)
     language = models.CharField(max_length=5, db_index=True,
                                 choices=settings.LANGUAGES,
-                                default=settings.LANGUAGES[0])
+                                default=settings.LANGUAGES[0][0])
 
     def __unicode__(self):
         return self.menu_title or self.title

@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib import admin
 from django.core import urlresolvers
+from django.db import models
+from django.utils.importlib import import_module
 from django.utils.translation import ugettext_lazy as _
 from feincms.admin.tree_editor import TreeEditor as _feincms_tree_editor
 from mptt.admin import MPTTModelAdmin
@@ -9,9 +11,18 @@ from resources.models import ResourceProperty, Page, Weblink, Resource, \
     ResourceTranslation, ResourceCollection, ResourceCollectionItem
 import datetime
 
+def get_class_from_string(str):
+    path = str
+    i = path.rfind('.')
+    module, attr = path[:i], path[i + 1:]
+    try:
+        mod = import_module(module)
+        return getattr(mod, attr)
+    except ImportError, e:
+        raise ImproperlyConfigured('Error importing module %s: "%s"' % (module, e))
+
 class ResourcePropertyInline(admin.TabularInline):
     model = ResourceProperty
-
 
 class FeinCMSModelAdmin(_feincms_tree_editor):
     """
@@ -90,6 +101,10 @@ class ResourceAdmin(FeinCMSModelAdmin):
     def __init__(self, *args, **kwargs):
         super(ResourceAdmin, self).__init__(*args, **kwargs)
         self.list_display_links = (None,)
+        if hasattr(settings, "RESOURCES_TEXTWIDGET"):
+            self.formfield_overrides = {
+                models.TextField: {'widget': get_class_from_string(settings.RESOURCES_PAGE_TEXTWIDGET) }
+            }
 
     def has_add_permission(self, request):
         return False
@@ -151,6 +166,13 @@ class PageAdmin(MPTTModelAdmin):
             'fields': ('menu_title', 'meta_summary', 'noindex')
          }),
     )
+
+    def __init__(self, *args, **kwargs):
+        super(PageAdmin, self).__init__(*args, **kwargs)
+        if hasattr(settings, "RESOURCES_PAGE_TEXTWIDGET"):
+            self.formfield_overrides = {
+                models.TextField: {'widget': get_class_from_string(settings.RESOURCES_PAGE_TEXTWIDGET) }
+            }
 
 
 admin.site.register(Page, PageAdmin)
