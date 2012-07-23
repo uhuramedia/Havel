@@ -101,10 +101,6 @@ class ResourceAdmin(FeinCMSModelAdmin):
     def __init__(self, *args, **kwargs):
         super(ResourceAdmin, self).__init__(*args, **kwargs)
         self.list_display_links = (None,)
-        if hasattr(settings, "RESOURCES_TEXTWIDGET"):
-            self.formfield_overrides = {
-                models.TextField: {'widget': get_class_from_string(settings.RESOURCES_PAGE_TEXTWIDGET) }
-            }
 
     def has_add_permission(self, request):
         return False
@@ -169,9 +165,10 @@ class PageAdmin(MPTTModelAdmin):
 
     def __init__(self, *args, **kwargs):
         super(PageAdmin, self).__init__(*args, **kwargs)
-        if hasattr(settings, "RESOURCES_PAGE_TEXTWIDGET"):
+        setting = "RESOURCES_%s_TEXTWIDGET" % self.model._meta.module_name.upper()
+        if hasattr(settings, setting):
             self.formfield_overrides = {
-                models.TextField: {'widget': get_class_from_string(settings.RESOURCES_PAGE_TEXTWIDGET) }
+                models.TextField: {'widget': get_class_from_string(getattr(settings, setting)) }
             }
 
 
