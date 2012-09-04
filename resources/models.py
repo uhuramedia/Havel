@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey
 import datetime
+from django.core.urlresolvers import reverse
 
 class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
@@ -44,7 +45,7 @@ class Resource(MPTTModel):
             return "%s%s/" % (self.parent.get_absolute_url(), self.slug)
         elif self.slug == "":
             return "/"
-        return "/%s/" % self.slug
+        return "%s%s/" % (reverse('resources-single'), self.slug)
 
     def save(self, *args, **kwargs):
         if not self.content_type:

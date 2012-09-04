@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('resources.views',
-    (r'^$', 'page'),
+    url(r'^$', 'page', name="resources-single"),
     (r'search/$', 'search'),
-    (r'.*/$', 'page'),
+    url(r'.*/$', 'page'),
 )
