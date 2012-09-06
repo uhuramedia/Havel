@@ -116,7 +116,7 @@ msgstr "Seite"
 
 #: models.py:197
 msgid "File"
-msgstr "Dateie"
+msgstr "Datei"
 
 #: models.py:198
 msgid "Files"
