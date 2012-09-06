@@ -6,7 +6,7 @@ from feincms.admin.tree_editor import TreeEditor as _feincms_tree_editor
 from mptt.admin import MPTTModelAdmin
 from mptt.forms import MPTTAdminForm, TreeNodeChoiceField
 from resources.models import ResourceProperty, Page, Weblink, Resource, \
-    ResourceTranslation, ResourceCollection, ResourceCollectionItem
+    ResourceTranslation, ResourceCollection, ResourceCollectionItem, File
 import datetime
 
 class ResourcePropertyInline(admin.TabularInline):
