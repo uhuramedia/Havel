@@ -172,7 +172,7 @@ class Page(Resource):
     template = models.CharField(max_length=100, blank=True,
                                 choices=template_choices(),
                                 default=template_default(),
-                                help_text="Inherit if empty")
+                                help_text=_("Inherit if empty"))
 
     class Meta:
         verbose_name = _(u'Page')
@@ -192,6 +192,10 @@ class Page(Resource):
 
 class File(models.Model):
     data = models.FileField(upload_to="file")
+
+    class Meta:
+        verbose_name = _(u'File')
+        verbose_name_plural = _(u'Files')
 
     def __unicode__(self):
         return os.path.basename(self.data.name)

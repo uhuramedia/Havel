@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-20 14:15+0200\n"
+"POT-Creation-Date: 2012-09-06 22:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,97 +18,109 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: admin.py:30 admin.py:32
+#: admin.py:41 admin.py:43
 msgid "View on site"
-msgstr ""
+msgstr "Auf Seite zeigen"
 
-#: admin.py:38 admin.py:39
+#: admin.py:49 admin.py:50
 msgid "Add page"
-msgstr ""
+msgstr "Seite hinzufügen"
 
-#: admin.py:45 admin.py:46
+#: admin.py:56 admin.py:57
 msgid "Add weblink"
-msgstr ""
+msgstr "Weblink hinzufügen"
 
-#: admin.py:58
+#: admin.py:69
 #, python-format
 msgid "Successfully deleted %s items."
-msgstr ""
+msgstr "Erfolgreich %s Einträge gelöscht."
 
-#: admin.py:63
+#: admin.py:74
 #, python-format
 msgid "Delete selected %(verbose_name_plural)s"
 msgstr ""
 
-#: admin.py:101
+#: admin.py:112
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: admin.py:106
+#: admin.py:117
 msgid "1 resource was"
-msgstr "1 Ressourcen wurde"
+msgstr "1 Ressource wurde"
 
-#: admin.py:108
+#: admin.py:119
 #, fuzzy, python-format
 msgid "%s resources were"
 msgstr "%s Ressourcen wurden"
 
-#: admin.py:109
+#: admin.py:120
 #, python-format
 msgid "%(num)s successfully %(action)s."
 msgstr "%(num)s erfolgreich %(action)s"
 
-#: admin.py:112
+#: admin.py:123
 msgid "marked as published"
 msgstr "als veröffentlicht markiert"
 
-#: admin.py:115
+#: admin.py:126
 msgid "Mark selected resources as published"
 msgstr "Ausgewählte Ressource veröffentlichen"
 
-#: admin.py:118
+#: admin.py:129
 msgid "marked as unpublished"
 msgstr "als veröffentlichs markiert"
 
-#: admin.py:121
+#: admin.py:132
 msgid "Mark selected resources as unpublished"
 msgstr "Ausgewählte Ressource als nicht veröffentlicht markieren"
 
-#: admin.py:129
+#: admin.py:140
 msgid "Link these resources as translation"
 msgstr "Diese Ressourcen als Übersetzung verknüpfen"
 
-#: models.py:34
+#: models.py:35
 msgid "Translation pool"
 msgstr "Übersetzungs-Pool"
 
-#: models.py:82
+#: models.py:83
 msgid "Resource"
 msgstr "Ressource"
 
-#: models.py:83
+#: models.py:84
 msgid "Resources"
 msgstr "Ressourcen"
 
-#: models.py:108
+#: models.py:109
 msgid "Resource translation"
 msgstr "Ressourcen-Übersetzung"
 
-#: models.py:109
+#: models.py:110
 msgid "Resource translations"
 msgstr "Ressourcen-Übersetzungen"
 
-#: models.py:131
+#: models.py:132
 msgid "Resource collection"
 msgstr "Ressourcen-Kollektion"
 
-#: models.py:132
+#: models.py:133
 msgid "Resource collections"
 msgstr "Ressourcen-Kollektionen"
 
-#: models.py:176 models.py:177
+#: models.py:175
+msgid "Inherit if empty"
+msgstr "Vererben wenn leer"
+
+#: models.py:178 models.py:179
 msgid "Page"
 msgstr "Seite"
+
+#: models.py:197
+msgid "File"
+msgstr "Dateie"
+
+#: models.py:198
+msgid "Files"
+msgstr "Dateien"
 
 #: templates/resources/page_content.html:7
 msgid "Edit this page"
