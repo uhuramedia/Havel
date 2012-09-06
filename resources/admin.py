@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib import admin
 from django.core import urlresolvers
+from django.db import models
+from django.utils.importlib import import_module
 from django.utils.translation import ugettext_lazy as _
 from feincms.admin.tree_editor import TreeEditor as _feincms_tree_editor
 from mptt.admin import MPTTModelAdmin
@@ -9,10 +11,19 @@ from resources.models import ResourceProperty, Page, Weblink, Resource, \
     ResourceTranslation, ResourceCollection, ResourceCollectionItem, File
 import datetime
 
+def get_class_from_string(str):
+    path = str
+    i = path.rfind('.')
+    module, attr = path[:i], path[i + 1:]
+    try:
+        mod = import_module(module)
+        return getattr(mod, attr)
+    except ImportError, e:
+        raise ImproperlyConfigured('Error importing module %s: "%s"' % (module, e))
+
 class ResourcePropertyInline(admin.TabularInline):
     model = ResourceProperty
-    
-    
+
 class FeinCMSModelAdmin(_feincms_tree_editor):
     """
     A ModelAdmin to add changelist tree view and editing capabilities.
@@ -32,14 +43,14 @@ class FeinCMSModelAdmin(_feincms_tree_editor):
                     _('View on site')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
-                urlresolvers.reverse('admin:resources_page_add'),                                                                                         
+                urlresolvers.reverse('admin:resources_page_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
                 _('Add page'),
                 _('Add page')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
-                urlresolvers.reverse('admin:resources_weblink_add'),                                                                                         
+                urlresolvers.reverse('admin:resources_weblink_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
                 _('Add weblink'),
@@ -72,12 +83,12 @@ def page_or_else(resource, code):
 
 
 class ResourceAdmin(FeinCMSModelAdmin):
-    list_display = ('title', 
-                    'title_link', 
+    list_display = ('__unicode__',
+                    'title_link',
                     'get_absolute_url',
-                    'created', 
-                    'modified', 
-                    'is_published', 
+                    'created',
+                    'modified',
+                    'is_published',
                     'translation_pool',
                     'in_menu',
                     'language',
@@ -86,50 +97,52 @@ class ResourceAdmin(FeinCMSModelAdmin):
     inlines = (ResourcePropertyInline,)
     actions = ('make_published', 'make_unpublished', 'link')
     prepopulated_fields = {'slug': ('title',)}
-    
-    def __init__(self, *args, **kwargs): 
+
+    def __init__(self, *args, **kwargs):
         super(ResourceAdmin, self).__init__(*args, **kwargs)
-        self.list_display_links = (None, )
-    
+        self.list_display_links = (None,)
+
     def has_add_permission(self, request):
         return False
-    
-    def title_link(self,obj):
+
+    def title_link(self, obj):
         return u'<a href="%s">%s</a>' % (obj.get_edit_link(),
                                          obj.content_type)
     title_link.allow_tags = True
-    title_link.short_description = "Edit"
-    
+    title_link.short_description = _("Edit")
+
     def make_do(self, request, queryset, label, *args, **make):
         rows_updated = queryset.update(**make)
         if rows_updated == 1:
-            message_bit = "1 resource was"
+            message_bit = _("1 resource was")
         else:
-            message_bit = "%s resources were" % rows_updated
-        self.message_user(request, "%s successfully %s." % (message_bit, label))
-    
+            message_bit = _("%s resources were" % rows_updated)
+        self.message_user(request, _("%(num)s successfully %(action)s." % {'num': message_bit, 'action': label}))
+
     def make_published(self, request, queryset):
-        return self.make_do(request, queryset, "marked as published", 
+        return self.make_do(request, queryset, _("marked as published"),
                             is_published=True, published=datetime.datetime.now())
 
-    make_published.short_description = "Mark selected resources as published"
-    
+    make_published.short_description = _("Mark selected resources as published")
+
     def make_unpublished(self, request, queryset):
-        return self.make_do(request, queryset, "marked as unpublished",
+        return self.make_do(request, queryset, _("marked as unpublished"),
                             is_published=False, published=None)
 
-    make_unpublished.short_description = "Mark selected resources as unpublished"
-    
+    make_unpublished.short_description = _("Mark selected resources as unpublished")
+
     def link(self, request, queryset):
         rt = ResourceTranslation.objects.create()
         for obj in queryset:
             obj.translation_pool = rt
             obj.save()
 
+    link.short_description = _("Link these resources as translation")
+
 admin.site.register(Resource, ResourceAdmin)
 
 class PageAdmin(MPTTModelAdmin):
-    list_display = ('title', 'parent', 'slug', 'created', 'author', 'get_absolute_url')
+    list_display = ('__unicode__', 'parent', 'slug', 'created', 'author', 'get_absolute_url')
     inlines = (ResourcePropertyInline,)
     prepopulated_fields = {'slug': ('title',)}
 
@@ -138,7 +151,7 @@ class PageAdmin(MPTTModelAdmin):
                 'fields': ('parent', ('title', 'slug'), 'language', 'text', 'template')
         }),
         ('Settings', {
-            'fields': ('in_menu', 'noindex', 'is_published', 'show_title')
+            'fields': ('in_menu', 'is_published', 'show_title')
         }),
         ('Timing', {
             'classes': ('collapse',),
@@ -146,9 +159,18 @@ class PageAdmin(MPTTModelAdmin):
         }),
          ('Other', {
             'classes': ('collapse',),
-            'fields': ('meta_summary',)
+            'fields': ('menu_title', 'meta_summary', 'noindex')
          }),
     )
+
+    def __init__(self, *args, **kwargs):
+        super(PageAdmin, self).__init__(*args, **kwargs)
+        setting = "RESOURCES_%s_TEXTWIDGET" % self.model._meta.module_name.upper()
+        if hasattr(settings, setting):
+            self.formfield_overrides = {
+                models.TextField: {'widget': get_class_from_string(getattr(settings, setting)) }
+            }
+
 
 admin.site.register(Page, PageAdmin)
 admin.site.register(Weblink)

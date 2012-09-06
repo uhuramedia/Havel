@@ -1,3 +1,4 @@
+{% if collection %}
 {% for item in collection.items %}
 {% with resource=item.resource %}
     <li>
@@ -11,3 +12,4 @@
     </li>
 {% endwith %}
 {% endfor %}
+{% endif %}
