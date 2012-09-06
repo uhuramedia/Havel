@@ -151,6 +151,7 @@ def template_default():
     except AttributeError:
         pass
 
+
 class Page(Resource):
     show_title = models.BooleanField(default=True)
     meta_summary = models.TextField(blank=True)
@@ -170,3 +171,10 @@ class Page(Resource):
     
     def resolve(self):
         return self.get_absolute_url()
+
+
+class File(models.Model):
+    data = models.FileField(upload_to="file")
+
+    def __unicode__(self):
+        return os.path.basename(self.data.name)

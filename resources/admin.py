@@ -160,3 +160,5 @@ class ResourceCollectionAdmin(admin.ModelAdmin):
     inlines = (ResourceCollectionItemInline,)
 
 admin.site.register(ResourceCollection, ResourceCollectionAdmin)
+
+admin.site.register(File)
