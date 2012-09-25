@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Search for {{ q }}</h2>
+{% for page in pages %}
+    <h3>{{ page }}</h3>
+    <p><a href="{{ page.get_absolute_url }}">Show page</a></p>
+{% empty %}
+    <p>No results</p>
+{% endfor %}
+{% endblock %}

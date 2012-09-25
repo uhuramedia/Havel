@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey
 import datetime
+import os
 
 class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
@@ -165,6 +166,7 @@ def template_default():
     except AttributeError:
         pass
 
+
 class Page(Resource):
     show_title = models.BooleanField(default=True)
     meta_summary = models.TextField(blank=True)
@@ -172,7 +174,7 @@ class Page(Resource):
     template = models.CharField(max_length=100, blank=True,
                                 choices=template_choices(),
                                 default=template_default(),
-                                help_text="Inherit if empty")
+                                help_text=_("Inherit if empty"))
 
     class Meta:
         verbose_name = _(u'Page')
@@ -191,3 +193,14 @@ class Page(Resource):
 
     def subpages(self):
         return render_to_string("resources/subpages.html", {'page': self, 'start': 2})
+
+
+class File(models.Model):
+    data = models.FileField(upload_to="file")
+
+    class Meta:
+        verbose_name = _(u'File')
+        verbose_name_plural = _(u'Files')
+
+    def __unicode__(self):
+        return os.path.basename(self.data.name)
