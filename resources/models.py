@@ -2,14 +2,15 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import urlresolvers
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey
 import datetime
-from django.core.urlresolvers import reverse
 
 class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
@@ -23,8 +24,8 @@ class Resource(MPTTModel):
     in_menu = models.BooleanField(default=False, db_index=True)
     noindex = models.BooleanField("Do not index", default=False)
 
-    created = models.DateTimeField(default=datetime.datetime.now, editable=False)
-    modified = models.DateTimeField(auto_now=True, default=datetime.datetime.now)
+    created = models.DateTimeField(auto_now_add=True, editable=False)
+    modified = models.DateTimeField(auto_now=True)
 
     is_published = models.BooleanField(default=False, db_index=True)
     published = models.DateTimeField(blank=True, null=True)
@@ -187,3 +188,6 @@ class Page(Resource):
 
     def resolve(self):
         return self.get_absolute_url()
+
+    def subpages(self):
+        return render_to_string("resources/subpages.html", {'page': self, 'start': 2})
