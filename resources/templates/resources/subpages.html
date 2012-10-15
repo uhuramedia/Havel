@@ -1,7 +1,8 @@
 {% load markup i18n %}
+{% if nav %}
 <article class="resources-subnav">
     <ul>
-    {% for page in page.get_children %}
+    {% for page in page.get_children_related %}
         <li>
             <a href="#page-{{ page.slug }}">{{ page.get_menu_title }}</a>
             {% if page.new %}<small class="fyi">Neu</small>
@@ -10,7 +11,8 @@
     {% endfor %}
     </ul>
 </article>
-{% for page in page.get_children %}
+{% endif %}
+{% for page in page.get_children_related %}
     {% with page=page.get_object start=start|default:1|add:1 %}
         <article class="resources-subpage" id="page-{{ page.slug }}">
         {% if page.show_title %}

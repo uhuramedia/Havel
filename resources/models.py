@@ -14,6 +14,23 @@ from mptt.models import MPTTModel, TreeForeignKey
 import datetime
 import os
 
+
+class cached_property(object):
+    '''A read-only @property that is only evaluated once. The value is cached
+    on the object itself rather than the function or class; this should prevent
+    memory leakage.'''
+    def __init__(self, fget, doc=None):
+        self.fget = fget
+        self.__doc__ = doc or fget.__doc__
+        self.__name__ = fget.__name__
+        self.__module__ = fget.__module__
+
+    def __get__(self, obj, cls):
+        if obj is None:
+            return self
+        obj.__dict__[self.__name__] = result = self.fget(obj)
+        return result
+
 class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
     objects = TreeManager()
@@ -60,6 +77,10 @@ class Resource(MPTTModel):
 
     def get_object(self):
         return getattr(self, self.content_type.lower())
+
+    @cached_property
+    def get_children_related(self):
+        return self.get_children().select_related('page', 'weblink')
 
     def resolve(self):
         return self.get_object().resolve()
@@ -135,17 +156,24 @@ class ResourceCollection(models.Model):
         return self.name
 
     def items(self):
-        return self.resourcecollectionitem_set.all().select_related().order_by('sort')
+        return self.resourcecollectionitem_set.all().select_related('resource__page', 'resource__weblink').order_by('sort')
 
     class Meta:
         verbose_name = _(u'Resource collection')
         verbose_name_plural = _(u'Resource collections')
 
 
+class ResourceCollectionManager(models.Manager):
+
+    def collection(self, name):
+        return self.filter(collection__name=name).select_related('resource__page', 'resource__weblink').order_by('sort')
+
+
 class ResourceCollectionItem(models.Model):
     collection = models.ForeignKey(ResourceCollection)
     resource = models.ForeignKey(Resource)
     sort = models.PositiveSmallIntegerField()
+    objects = ResourceCollectionManager()
 
 
 class Weblink(Resource):
@@ -200,6 +228,9 @@ class Page(Resource):
 
     def subpages(self):
         return render_to_string("resources/subpages.html", {'page': self, 'start': 2})
+
+    def subnav(self):
+        return render_to_string("resources/subnav.html", {'page': self, 'start': 2})
 
 
 class File(models.Model):

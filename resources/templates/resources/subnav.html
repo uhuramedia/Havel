@@ -1,0 +1,27 @@
+{% load markup i18n %}
+<article class="resources-subnav">
+    <ul>
+    {% for page in page.get_children_related %}
+        <li>
+            <a href="#page-{{ page.slug }}">{{ page.get_menu_title }}</a>
+            {% if page.new %}<small class="fyi">Neu</small>
+            {% elif page.fresh %}<small class="fyi">Kürzlich&nbsp;aktualisiert</small>{% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</article>
+{% for page in page.get_children_related %}
+    {% with page=page.get_object start=start|default:1|add:1 %}
+        {% if not page.is_leaf_node %}
+            <article class="resources-subpage" id="page-{{ page.slug }}">
+            {% if page.show_title %}
+                <h{{ start|default:1 }}>
+                    {{ page.title }}
+                    <a class="headerlink" title="Permalink" href="#page-{{ page.slug }}">¶</a>
+                </h{{ start|default:1 }}>
+            {% endif %}
+            {{ page.subnav }}
+            </article>
+        {% endif %}
+    {% endwith %}
+{% endfor %}

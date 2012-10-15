@@ -1,5 +1,5 @@
 from django import template
-from resources.models import Page, ResourceCollection
+from resources.models import Page, ResourceCollection, ResourceCollectionItem
 from django.utils import translation
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -9,7 +9,7 @@ register = template.Library()
 @register.inclusion_tag('resources/menu.html', takes_context=True)
 def show_menu(context):
     lang = translation.get_language()
-    pages = Page.tree.filter(in_menu=True, language=lang)
+    pages = Page.tree.filter(in_menu=True, language=lang).select_related('page', 'weblink')
     return {'page': context.get('page', None),
             'pages': pages}
 
@@ -70,9 +70,9 @@ def show_menu_at_level(context, level, page=None):
 @register.inclusion_tag('resources/collection.html', takes_context=True)
 def page_collection(context, collection_slug):
     try:
-        collection = ResourceCollection.objects.get(name=collection_slug)
+        items = ResourceCollectionItem.objects.collection(collection_slug)
         return {'page': context.get('page', None),
-                'collection': collection}
+                'items': items}
     except ResourceCollection.DoesNotExist:
         pass
 

@@ -1,5 +1,4 @@
-{% if collection %}
-{% for item in collection.items %}
+{% for item in items %}
 {% with resource=item.resource %}
     <li>
         <a 
@@ -12,4 +11,3 @@
     </li>
 {% endwith %}
 {% endfor %}
-{% endif %}
