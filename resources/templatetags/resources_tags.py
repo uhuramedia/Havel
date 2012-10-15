@@ -27,9 +27,18 @@ def breadcrumbs(context, page=None):
     lang = translation.get_language()
     page = page or context.get('page', None)
     pages = page.get_ancestors(include_self=True).\
-                filter(in_menu=True, language=lang)
+                filter(language=lang)
     return {'page': context.get('page', None),
             'pages': pages}
+
+
+@register.assignment_tag(takes_context=True)
+def breadcrumbs_items(context, page=None):
+    lang = translation.get_language()
+    page = page or context.get('page', None)
+    pages = page.get_ancestors(include_self=True).\
+                filter(language=lang)
+    return pages
 
 
 @register.inclusion_tag('resources/menu.html', takes_context=True)

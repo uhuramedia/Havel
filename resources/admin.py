@@ -36,10 +36,10 @@ class FeinCMSModelAdmin(_feincms_tree_editor):
         actions = super(FeinCMSModelAdmin, self)._actions_column(obj)
         if hasattr(obj, 'get_absolute_url'):
             actions.insert(0,
-                u'<a href="%s" title="%s" target="_blank"><img src="%simg/admin/selector-search.gif" alt="%s" /></a>' % (
+                u'<a href="%s" title="%s" target="_blank"><img src="%sadmin/img/admin/selector-search.gif" alt="%s" /></a>' % (
                     obj.get_absolute_url(),
                     _('View on site'),
-                    settings.ADMIN_MEDIA_PREFIX,
+                    settings.STATIC_URL,
                     _('View on site')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (

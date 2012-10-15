@@ -7,6 +7,7 @@ from django.db import models
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey
@@ -79,6 +80,12 @@ class Resource(MPTTModel):
 
     def get_translated_versions(self):
         return self.translation_pool.get_versions()
+
+    def new(self):
+        return self.modified > timezone.now() - datetime.timedelta(days=7)
+
+    def fresh(self):
+        return self.modified != self.created and (self.modified > timezone.now() - datetime.timedelta(days=14))
 
 
     class Meta:
