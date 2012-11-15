@@ -103,7 +103,7 @@ class Resource(MPTTModel):
         return self.translation_pool.get_versions()
 
     def new(self):
-        return self.modified > timezone.now() - datetime.timedelta(days=7)
+        return self.created > timezone.now() - datetime.timedelta(days=7)
 
     def fresh(self):
         return self.modified != self.created and (self.modified > timezone.now() - datetime.timedelta(days=14))
