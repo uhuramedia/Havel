@@ -34,27 +34,20 @@ class FeinCMSModelAdmin(_feincms_tree_editor):
 
     def _actions_column(self, obj):
         actions = super(FeinCMSModelAdmin, self)._actions_column(obj)
-        if hasattr(obj, 'get_absolute_url'):
-            actions.insert(0,
-                u'<a href="%s" title="%s" target="_blank"><img src="%sadmin/img/admin/selector-search.gif" alt="%s" /></a>' % (
-                    obj.get_absolute_url(),
-                    _('View on site'),
-                    settings.STATIC_URL,
-                    _('View on site')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
                 urlresolvers.reverse('admin:resources_page_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
-                _('Add page'),
-                _('Add page')))
+                _('+Page'),
+                _('+Page')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
                 urlresolvers.reverse('admin:resources_weblink_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
-                _('Add weblink'),
-                _('Add weblink')))
+                _('+Weblink'),
+                _('+Weblink')))
         return actions
 
     def delete_selected_tree(self, modeladmin, request, queryset):
@@ -85,12 +78,9 @@ def page_or_else(resource, code):
 class ResourceAdmin(FeinCMSModelAdmin):
     list_display = ('__unicode__',
                     'title_link',
-                    'get_absolute_url',
-                    'created',
-                    'modified',
                     'is_published',
-                    'translation_pool',
                     'in_menu',
+                    'translation_pool',
                     'language',
                     'author')
     list_filter = ('is_published', 'in_menu', 'author', 'language')
@@ -141,8 +131,13 @@ class ResourceAdmin(FeinCMSModelAdmin):
 
 admin.site.register(Resource, ResourceAdmin)
 
-class PageAdmin(MPTTModelAdmin):
-    list_display = ('__unicode__', 'parent', 'slug', 'created', 'author', 'get_absolute_url')
+class PageAdmin(FeinCMSModelAdmin):
+    list_display = ('__unicode__',
+                    'is_published',
+                    'in_menu',
+                    'language',
+                    'author')
+    list_filter = ('is_published', 'in_menu', 'author', 'language')
     inlines = (ResourcePropertyInline,)
     prepopulated_fields = {'slug': ('title',)}
 
@@ -170,6 +165,11 @@ class PageAdmin(MPTTModelAdmin):
             self.formfield_overrides = {
                 models.TextField: {'widget': get_class_from_string(getattr(settings, setting)) }
             }
+
+    def save_model(self, request, obj, form, change):
+        if getattr(obj, 'author', None) is None:
+            obj.author = request.user
+        obj.save()
 
 
 admin.site.register(Page, PageAdmin)

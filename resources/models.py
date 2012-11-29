@@ -33,7 +33,7 @@ class cached_property(object):
 
 class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
-    objects = TreeManager()
+    objects = tree = TreeManager()
     content_type = models.SlugField(editable=False)
 
     title = models.CharField(max_length=100)
@@ -121,7 +121,7 @@ class ResourceTranslation(models.Model):
     by putting them in the same translation pool"""
 
     def __unicode__(self):
-        return " ".join(["[%s] %s" % (obj.language, obj) for obj in self.resource_set.all()])
+        return " ".join(["[%s] %s" % (obj.language, unicode(obj)[:20]) for obj in self.resource_set.all()])
 
     def get_versions(self):
         try:
