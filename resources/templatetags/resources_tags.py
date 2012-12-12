@@ -26,6 +26,8 @@ def show_menu_below(context, page_pk):
 def breadcrumbs(context, page=None):
     lang = translation.get_language()
     page = page or context.get('page', None)
+    if not page:
+        return
     pages = page.get_ancestors(include_self=True).\
                 filter(language=lang)
     return {'page': context.get('page', None),

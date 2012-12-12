@@ -4,5 +4,5 @@
 {% endif %}
 {{ page.text|markdown }}
 {% if user.is_staff %}
-    <p class="editlink"><a href="{{ page.get_edit_link }}" target="_blank">{% trans "Edit this page" %}</a></p>
+    <p class="editlink staff"><a href="{{ page.get_edit_link }}" target="_blank">{% trans "Edit this page" %}</a></p>
 {% endif %}
