@@ -14,10 +14,12 @@ def show_menu(context):
             'pages': pages}
 
 @register.inclusion_tag('resources/menu.html', takes_context=True)
-def show_menu_below(context, page_pk):
+def show_menu_below(context, page_pk, parent_if_empty=1):
     lang = translation.get_language()
-    pages = Page.objects.get(pk=page_pk).get_children().\
-                filter(in_menu=True, language=lang)
+    children = Page.objects.get(pk=page_pk).get_children()
+    if not children and parent_if_empty:
+        children = Page.objects.get(pk=page_pk).parent.get_children()
+    pages = children.filter(in_menu=True, language=lang)
     return {'page': context.get('page', None),
             'pages': pages}
 
