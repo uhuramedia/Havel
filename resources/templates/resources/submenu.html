@@ -1,0 +1,12 @@
+{% load mptt_tags %}
+{% recursetree pages %}
+    <li>
+        <a 
+        href="{{ node.resolve }}"
+        {% if page.pk == node.pk %}class="active"{% endif %}
+        title="{{ node.title }}"
+        >
+            {{ node.get_menu_title }}
+        </a>
+    </li>
+{% endrecursetree %}

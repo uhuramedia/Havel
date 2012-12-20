@@ -23,11 +23,21 @@ def show_menu_below(context, page_pk, parent_if_empty=1):
     return {'page': context.get('page', None),
             'pages': pages}
 
+@register.inclusion_tag('resources/submenu.html', takes_context=True)
+def show_submenu(context, page_pk):
+    lang = translation.get_language()
+    pages = Page.objects.get(pk=page_pk).get_children().\
+                filter(in_menu=True, language=lang)
+    return {'page': context.get('page', None),
+            'pages': pages}
+
 
 @register.inclusion_tag('resources/list.html', takes_context=True)
 def breadcrumbs(context, page=None):
     lang = translation.get_language()
     page = page or context.get('page', None)
+    if not page:
+        return
     pages = page.get_ancestors(include_self=True).\
                 filter(language=lang)
     return {'page': context.get('page', None),
