@@ -62,7 +62,7 @@ class Resource(MPTTModel):
 
     def get_absolute_url(self):
         if self.slug == "":
-            return "%s/" % reverse('resources-single')
+            return reverse('resources-single')
         url = self.slug
         for ancestor in self.get_ancestors(ascending=True):
             url = ancestor.slug + '/' + url
