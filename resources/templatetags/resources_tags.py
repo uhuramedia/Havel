@@ -1,15 +1,16 @@
 from django import template
-from resources.models import Page, ResourceCollection, ResourceCollectionItem
-from django.utils import translation
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.utils import translation
+from resources.models import Page, ResourceCollection, ResourceCollectionItem, \
+    Resource
 
 register = template.Library()
 
 @register.inclusion_tag('resources/menu.html', takes_context=True)
 def show_menu(context, onepage=False):
     lang = translation.get_language()
-    pages = Page.tree.filter(in_menu=True, language=lang).select_related('page', 'weblink')
+    pages = Resource.tree.filter(in_menu=True, language=lang, level=0).select_related('page', 'weblink')
     return {'page': context.get('page', None),
             'pages': pages,
             'onepage': onepage}
@@ -17,9 +18,10 @@ def show_menu(context, onepage=False):
 @register.inclusion_tag('resources/menu.html', takes_context=True)
 def show_menu_below(context, page_pk, parent_if_empty=1):
     lang = translation.get_language()
-    children = Page.objects.get(pk=page_pk).get_children()
-    if not children and parent_if_empty:
-        children = Page.objects.get(pk=page_pk).parent.get_children()
+    resource = Resource.objects.get(pk=page_pk)
+    children = resource.get_children()
+    if not children and parent_if_empty and resource.parent:
+        children = resource.parent.get_children()
     pages = children.filter(in_menu=True, language=lang)
     return {'page': context.get('page', None),
             'pages': pages}
@@ -27,7 +29,7 @@ def show_menu_below(context, page_pk, parent_if_empty=1):
 @register.inclusion_tag('resources/submenu.html', takes_context=True)
 def show_submenu(context, page_pk):
     lang = translation.get_language()
-    pages = Page.objects.get(pk=page_pk).get_children().\
+    pages = Resource.objects.get(pk=page_pk).get_children().\
                 filter(in_menu=True, language=lang)
     return {'page': context.get('page', None),
             'pages': pages}

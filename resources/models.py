@@ -61,11 +61,12 @@ class Resource(MPTTModel):
         return self.menu_title or self.title
 
     def get_absolute_url(self):
-        if self.parent is not None:
-            return "%s%s/" % (self.parent.get_absolute_url(), self.slug)
-        elif self.slug == "":
-            return "/"
-        return "%s%s/" % (reverse('resources-single'), self.slug)
+        if self.slug == "":
+            return reverse('resources-single')
+        url = self.slug
+        for ancestor in self.get_ancestors(ascending=True):
+            url = ancestor.slug + '/' + url
+        return "%s%s/" % (reverse('resources-single'), url)
 
     def save(self, *args, **kwargs):
         if not self.content_type:
