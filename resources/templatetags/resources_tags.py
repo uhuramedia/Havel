@@ -7,11 +7,12 @@ from django.contrib.sites.models import Site
 register = template.Library()
 
 @register.inclusion_tag('resources/menu.html', takes_context=True)
-def show_menu(context):
+def show_menu(context, onepage=False):
     lang = translation.get_language()
     pages = Page.tree.filter(in_menu=True, language=lang).select_related('page', 'weblink')
     return {'page': context.get('page', None),
-            'pages': pages}
+            'pages': pages,
+            'onepage': onepage}
 
 @register.inclusion_tag('resources/menu.html', takes_context=True)
 def show_menu_below(context, page_pk, parent_if_empty=1):
@@ -80,11 +81,12 @@ def show_menu_at_level(context, level, page=None):
             'pages': pages}
 
 @register.inclusion_tag('resources/collection.html', takes_context=True)
-def page_collection(context, collection_slug):
+def page_collection(context, collection_slug, onepage=False):
     try:
         items = ResourceCollectionItem.objects.collection(collection_slug)
         return {'page': context.get('page', None),
-                'items': items}
+                'items': items,
+                'onepage': onepage}
     except ResourceCollection.DoesNotExist:
         pass
 
