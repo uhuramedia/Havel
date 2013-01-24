@@ -1,8 +1,8 @@
 {% load mptt_tags %}
 {% recursetree pages %}
     <li>
-        <a 
-        href="{{ node.resolve }}"
+        <a
+        href="{% if onepage %}#{% endif %}{{ node.resolve }}"
         {% if page.pk == node.pk %}class="active"{% endif %}
         title="{{ node.title }}"
         >
