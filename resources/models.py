@@ -218,7 +218,10 @@ class Page(Resource):
 
     def get_template(self):
         if self.template == "":
-            return self.parent.get_object().get_template()
+            try:
+                return self.parent.get_object().get_template()
+            except AttributeError: #  no parent
+                return template_default()
         return self.template
 
     def get_response(self, request):
