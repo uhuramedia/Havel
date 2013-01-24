@@ -221,7 +221,7 @@ class Page(Resource):
             try:
                 return self.parent.get_object().get_template()
             except AttributeError: #  no parent
-                return template_default()
+                return template_default() or template_choices()[0][0]
         return self.template
 
     def get_response(self, request):
