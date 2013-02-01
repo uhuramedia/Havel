@@ -27,12 +27,14 @@ def show_menu_below(context, page_pk, parent_if_empty=1):
             'pages': pages}
 
 @register.inclusion_tag('resources/submenu.html', takes_context=True)
-def show_submenu(context, page_pk):
+def show_submenu(context, page_pk, in_menu=True):
     lang = translation.get_language()
     pages = Resource.objects.get(pk=page_pk).get_children().\
-                filter(in_menu=True, language=lang)
+                filter(in_menu=in_menu, language=lang)
+
     return {'page': context.get('page', None),
-            'pages': pages}
+            'pages': pages,
+            'parent': page_pk}
 
 
 @register.inclusion_tag('resources/list.html', takes_context=True)
