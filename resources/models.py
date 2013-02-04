@@ -109,6 +109,13 @@ class Resource(MPTTModel):
     def fresh(self):
         return self.modified != self.created and (self.modified > timezone.now() - datetime.timedelta(days=14))
 
+    def __getattribute__(self, name):
+        if name.startswith("property_"):
+            try:
+                return self.resourceproperty_set.get(key=name.replace("property_", "")).value
+            except:
+                pass
+        return MPTTModel.__getattribute__(self, name)
 
     class Meta:
         verbose_name = _('Resource')
@@ -144,7 +151,7 @@ class ResourceTranslation(models.Model):
 class ResourceProperty(models.Model):
     resource = models.ForeignKey(Resource)
     key = models.CharField(max_length=20)
-    value = models.CharField(max_length=255)
+    value = models.TextField()
 
     class Meta:
         unique_together = ('resource', 'key')
