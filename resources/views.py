@@ -11,6 +11,9 @@ def page(request):
     slug = path[-1]
     language = translation.get_language()
     resource = get_object_or_404(Resource, slug=slug, language=language)
+    if resource.get_absolute_url() != request.path:
+        qs = "?" + request.META['QUERY_STRING'] if request.META['QUERY_STRING'] != "" else ""
+        return HttpResponsePermanentRedirect(resource.get_absolute_url() + qs)
     return resource.get_object().get_response(request)
 
 

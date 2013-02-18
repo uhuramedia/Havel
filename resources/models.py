@@ -61,11 +61,12 @@ class Resource(MPTTModel):
         return self.menu_title or self.title
 
     def get_absolute_url(self):
-        if self.parent is not None:
-            return "%s%s/" % (self.parent.get_absolute_url(), self.slug)
-        elif self.slug == "":
-            return "/"
-        return "%s%s/" % (reverse('resources-single'), self.slug)
+        if self.slug == "":
+            return reverse('resources-single')
+        url = self.slug
+        for ancestor in self.get_ancestors(ascending=True):
+            url = ancestor.slug + '/' + url
+        return "%s%s/" % (reverse('resources-single'), url)
 
     def save(self, *args, **kwargs):
         if not self.content_type:
@@ -108,6 +109,13 @@ class Resource(MPTTModel):
     def fresh(self):
         return self.modified != self.created and (self.modified > timezone.now() - datetime.timedelta(days=14))
 
+    def __getattribute__(self, name):
+        if name.startswith("property_"):
+            try:
+                return self.resourceproperty_set.get(key=name.replace("property_", "")).value
+            except:
+                pass
+        return MPTTModel.__getattribute__(self, name)
 
     class Meta:
         verbose_name = _('Resource')
@@ -143,7 +151,7 @@ class ResourceTranslation(models.Model):
 class ResourceProperty(models.Model):
     resource = models.ForeignKey(Resource)
     key = models.CharField(max_length=20)
-    value = models.CharField(max_length=255)
+    value = models.TextField()
 
     class Meta:
         unique_together = ('resource', 'key')
@@ -217,7 +225,10 @@ class Page(Resource):
 
     def get_template(self):
         if self.template == "":
-            return self.parent.get_object().get_template()
+            try:
+                return self.parent.get_object().get_template()
+            except AttributeError: #  no parent
+                return template_default() or template_choices()[0][0]
         return self.template
 
     def get_response(self, request):

@@ -1,8 +1,8 @@
 {% load markup i18n %}
 {% if page.show_title %}
-    <h2>{{ page.title }}</h2>
+    <h1>{{ page.title }}</h1>
 {% endif %}
 {{ page.text|markdown }}
 {% if user.is_staff %}
-    <p class="editlink"><a href="{{ page.get_edit_link }}" target="_blank">{% trans "Edit this page" %}</a></p>
+    <p class="editlink staff"><a href="{{ page.get_edit_link }}" target="_blank">{% trans "Edit this page" %}</a></p>
 {% endif %}
