@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core import urlresolvers
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -191,7 +191,7 @@ class Weblink(Resource):
         return self.target
 
     def get_response(self, request):
-        return HttpResponseRedirect(self.target)
+        return HttpResponsePermanentRedirect(self.target)
 
     def resolve(self):
         return self.target
