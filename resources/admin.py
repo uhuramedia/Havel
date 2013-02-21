@@ -23,6 +23,7 @@ def get_class_from_string(str):
 
 class ResourcePropertyInline(admin.TabularInline):
     model = ResourceProperty
+    extra = 0
 
 class FeinCMSModelAdmin(_feincms_tree_editor):
     """
