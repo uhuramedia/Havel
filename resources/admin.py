@@ -174,7 +174,7 @@ class PageAdmin(FeinCMSModelAdmin):
 
 
 admin.site.register(Page, PageAdmin)
-admin.site.register(Weblink)
+admin.site.register(Weblink, ResourceAdmin)
 
 class ResourceCollectionItemInline(admin.TabularInline):
     model = ResourceCollectionItem
