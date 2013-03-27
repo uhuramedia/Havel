@@ -31,22 +31,27 @@ class cached_property(object):
         obj.__dict__[self.__name__] = result = self.fget(obj)
         return result
 
+
+class ResourceManager(TreeManager):
+
+    def get_query_set(self):
+        return super(ResourceManager, self).get_query_set().filter(is_published=True)
+
 class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
-    objects = tree = TreeManager()
     content_type = models.SlugField(editable=False)
 
     title = models.CharField(max_length=100)
     menu_title = models.CharField(max_length=100, blank=True)
     slug = models.SlugField(blank=True)
 
-    in_menu = models.BooleanField(default=False, db_index=True)
+    in_menu = models.BooleanField(default=True, db_index=True)
     noindex = models.BooleanField("Do not index", default=False)
 
     created = models.DateTimeField(auto_now_add=True, editable=False)
     modified = models.DateTimeField(auto_now=True)
 
-    is_published = models.BooleanField(default=False, db_index=True)
+    is_published = models.BooleanField(default=True, db_index=True)
     published = models.DateTimeField(blank=True, null=True)
     unpublished = models.DateTimeField(blank=True, null=True)
 
@@ -56,6 +61,9 @@ class Resource(MPTTModel):
     language = models.CharField(max_length=5, db_index=True,
                                 choices=settings.LANGUAGES,
                                 default=settings.LANGUAGES[0][0])
+
+    all_objects = models.Manager()
+    objects = tree = ResourceManager()
 
     def __unicode__(self):
         return self.menu_title or self.title
