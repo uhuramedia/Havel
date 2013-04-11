@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 from django.core import urlresolvers
 from django.db import models
 from django.utils.importlib import import_module
@@ -132,6 +133,7 @@ class ResourceAdmin(FeinCMSModelAdmin):
 
 admin.site.register(Resource, ResourceAdmin)
 
+
 class PageAdmin(FeinCMSModelAdmin):
     list_display = ('__unicode__',
                     'is_published',
@@ -166,6 +168,9 @@ class PageAdmin(FeinCMSModelAdmin):
             self.formfield_overrides = {
                 models.TextField: {'widget': get_class_from_string(getattr(settings, setting)) }
             }
+            overrides = FORMFIELD_FOR_DBFIELD_DEFAULTS.copy()
+            overrides.update(self.formfield_overrides)
+            self.formfield_overrides = overrides
 
     def save_model(self, request, obj, form, change):
         if getattr(obj, 'author', None) is None:
@@ -174,7 +179,14 @@ class PageAdmin(FeinCMSModelAdmin):
 
 
 admin.site.register(Page, PageAdmin)
-admin.site.register(Weblink, ResourceAdmin)
+
+
+class WeblinkAdmin(ResourceAdmin):
+
+    def has_add_permission(self, request):
+        return True
+
+admin.site.register(Weblink, WeblinkAdmin)
 
 class ResourceCollectionItemInline(admin.TabularInline):
     model = ResourceCollectionItem
