@@ -172,6 +172,12 @@ class PageAdmin(FeinCMSModelAdmin):
             overrides.update(self.formfield_overrides)
             self.formfield_overrides = overrides
 
+        setting = "RESOURCES_%s_INLINES" % self.model._meta.module_name.upper()
+        if hasattr(settings, setting):
+            self.inlines = list(self.inlines)
+            for i in getattr(settings, setting):
+                self.inlines.append(get_class_from_string(i))
+
     def save_model(self, request, obj, form, change):
         if getattr(obj, 'author', None) is None:
             obj.author = request.user
