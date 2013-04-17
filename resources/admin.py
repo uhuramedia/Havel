@@ -189,6 +189,15 @@ admin.site.register(Page, PageAdmin)
 
 class WeblinkAdmin(ResourceAdmin):
 
+    def __init__(self, *args, **kwargs):
+        super(WeblinkAdmin, self).__init__(*args, **kwargs)
+
+        setting = "RESOURCES_%s_INLINES" % self.model._meta.module_name.upper()
+        if hasattr(settings, setting):
+            self.inlines = list(self.inlines)
+            for i in getattr(settings, setting):
+                self.inlines.append(get_class_from_string(i))
+
     def has_add_permission(self, request):
         return True
 
