@@ -62,7 +62,7 @@ class Resource(MPTTModel):
                                 choices=settings.LANGUAGES,
                                 default=settings.LANGUAGES[0][0])
 
-    all_objects = models.Manager()
+    all_objects = TreeManager()
     objects = tree = ResourceManager()
 
     def __unicode__(self):

@@ -86,9 +86,11 @@ class ResourceAdmin(FeinCMSModelAdmin):
                     'language',
                     'author')
     list_filter = ('is_published', 'in_menu', 'author', 'language')
+    search_fields = ('title',)
     inlines = (ResourcePropertyInline,)
     actions = ('make_published', 'make_unpublished', 'link')
     prepopulated_fields = {'slug': ('title',)}
+    ordering = ['tree_id', 'lft']
 
     def __init__(self, *args, **kwargs):
         super(ResourceAdmin, self).__init__(*args, **kwargs)
