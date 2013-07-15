@@ -68,6 +68,8 @@ def show_menu_at_level(context, level, page=None):
     #  2 2   2 2
     lang = translation.get_language()
     target = page = page or context.get('page', None)
+    if not page:
+        return
 
     try:
         if page.level > level:

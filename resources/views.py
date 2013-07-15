@@ -1,10 +1,11 @@
-from django.shortcuts import render, get_object_or_404
-from resources.models import Resource, Page
-from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect, \
-    Http404
 from django.core.urlresolvers import resolve
-from django.utils import translation
 from django.db.models import Q
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect, \
+    HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.template.base import TemplateDoesNotExist
+from django.utils import translation
+from resources.models import Resource, Page
 
 def page(request):
     path = request.path.strip('/').split('/')
@@ -14,7 +15,10 @@ def page(request):
     if resource.get_absolute_url() != request.path:
         qs = "?" + request.META['QUERY_STRING'] if request.META['QUERY_STRING'] != "" else ""
         return HttpResponsePermanentRedirect(resource.get_absolute_url() + qs)
-    return resource.get_object().get_response(request)
+    try:
+        return resource.get_object().get_response(request)
+    except TemplateDoesNotExist:
+        return HttpResponse(status=503)
 
 
 def search(request):
