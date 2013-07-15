@@ -68,6 +68,9 @@ class Resource(MPTTModel):
     def __unicode__(self):
         return self.menu_title or self.title
 
+    def mptt_title(self):
+        return "%s %s" % ("".join(["- " * self.level]), self.__unicode__())
+
     def get_absolute_url(self):
         if self.slug == "":
             return reverse('resources-single')

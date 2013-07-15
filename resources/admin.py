@@ -136,12 +136,14 @@ class ResourceAdmin(FeinCMSModelAdmin):
 admin.site.register(Resource, ResourceAdmin)
 
 
-class PageAdmin(FeinCMSModelAdmin):
-    list_display = ('__unicode__',
+class PageAdmin(admin.ModelAdmin):
+    list_display = ('mptt_title',
                     'is_published',
                     'in_menu',
+                    'slug',
                     'language',
                     'author')
+    ordering = ('tree_id', 'lft')
     list_filter = ('is_published', 'in_menu', 'author', 'language')
     inlines = (ResourcePropertyInline,)
     prepopulated_fields = {'slug': ('title',)}
