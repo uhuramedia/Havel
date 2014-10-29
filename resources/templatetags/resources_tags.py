@@ -56,8 +56,7 @@ def breadcrumbs(context, page=None):
 def breadcrumbs_items(context, page=None):
     lang = translation.get_language()
     page = page or context.get('page', None)
-    pages = page.get_ancestors(include_self=True).\
-                filter(language=lang)
+    pages = page.get_ancestors(include_self=True).filter(language=lang)
     return pages
 
 

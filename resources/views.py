@@ -16,10 +16,7 @@ def page(request):
     if resource.get_absolute_url() != request.path:
         qs = "?" + request.META['QUERY_STRING'] if request.META['QUERY_STRING'] != "" else ""
         return HttpResponsePermanentRedirect(resource.get_absolute_url() + qs)
-    try:
-        return resource.get_object().get_response(request)
-    except TemplateDoesNotExist:
-        return HttpResponse(status=503)
+    return resource.get_object().get_response(request)
 
 
 def search(request):
