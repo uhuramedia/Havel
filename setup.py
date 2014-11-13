@@ -16,5 +16,5 @@ setup(
     include_package_data = True,
     zip_safe=False,
     license="None",
-    install_requires=["django-mptt", "feincms"]
+    install_requires=["django-mptt", "feincms", "django-ckeditor"]
 )

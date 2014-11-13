@@ -2,7 +2,7 @@
 {% if page.show_title %}
     <h1>{{ page.title }}</h1>
 {% endif %}
-{{ page.text }}
+{{ page.text|safe }}
 {% if user.is_staff %}
     <p class="editlink staff"><a href="{{ page.get_edit_link }}" target="_blank">{% trans "Edit this page" %}</a></p>
 {% endif %}

@@ -1,4 +1,8 @@
 # -*- coding: UTF-8 -*-
+
+import datetime
+import os
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import urlresolvers
@@ -9,10 +13,10 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey
-import datetime
-import os
+from ckeditor.fields import RichTextField
 
 
 class cached_property(object):
@@ -224,7 +228,7 @@ def template_default():
 class Page(Resource):
     show_title = models.BooleanField(default=True)
     meta_summary = models.TextField(blank=True)
-    text = models.TextField(blank=True)
+    text = RichTextField(blank=True)
     template = models.CharField(max_length=100, blank=True,
                                 choices=template_choices(),
                                 default=template_default(),
