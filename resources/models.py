@@ -38,8 +38,8 @@ class cached_property(object):
 
 class ResourceManager(TreeManager):
 
-    def get_query_set(self):
-        return super(ResourceManager, self).get_query_set().filter(is_published=True)
+    def get_queryset(self):
+        return super(ResourceManager, self).get_queryset().filter(is_published=True)
 
 class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
