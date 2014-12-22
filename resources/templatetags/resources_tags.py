@@ -18,11 +18,13 @@ def show_menu(context, onepage=False):
 @register.inclusion_tag('resources/menu.html', takes_context=True)
 def show_menu_below(context, page_pk, parent_if_empty=1):
     lang = translation.get_language()
-    resource = Resource.objects.get(pk=page_pk)
-    children = resource.get_children()
-    if not children and parent_if_empty and resource.parent:
-        children = resource.parent.get_children()
-    pages = children.filter(in_menu=True, language=lang).select_related('page', 'weblink')
+    pages = Resource.objects.none()
+    if page_pk:
+        resource = Resource.objects.get(pk=page_pk)
+        children = resource.get_children()
+        if not children and parent_if_empty and resource.parent:
+            children = resource.parent.get_children()
+        pages = children.filter(in_menu=True, language=lang).select_related('page', 'weblink')
     return {'page': context.get('page', None),
             'pages': pages}
 
