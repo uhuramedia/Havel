@@ -2,9 +2,7 @@ Havel
 =====
 A basic Django based CMS
 
-Havel is a thin CMS app for Django.
-
-Its main thing is a `Resource` class that inherits from `MPTTModel` and is thus
+Havel is a thin CMS app for Django. Its main thing is a `Resource` class that inherits from `MPTTModel` and is thus
 placed within a tree. It contains the main meta information that make a resource
 like title, slug, creation dates and so on.
 
