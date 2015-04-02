@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 VERSION = "0.2"
 
 setup(
-    name="fm.resources",
+    name="HavelCMS",
     version = VERSION,
     author="Julian Bez",
     author_email="julian@freshmilk.tv",
