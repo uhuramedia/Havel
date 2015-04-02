@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
@@ -5,12 +7,13 @@ from django.core import urlresolvers
 from django.db import models
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext_lazy as _
+
 from feincms.admin.tree_editor import TreeEditor as _feincms_tree_editor
 from mptt.admin import MPTTModelAdmin
 from mptt.forms import MPTTAdminForm, TreeNodeChoiceField
-from resources.models import ResourceProperty, Page, Weblink, Resource, \
+
+from HavelCMS.models import ResourceProperty, Page, Weblink, Resource, \
     ResourceTranslation, ResourceCollection, ResourceCollectionItem, File
-import datetime
 
 def get_class_from_string(str):
     path = str

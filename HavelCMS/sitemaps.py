@@ -1,6 +1,7 @@
 from django.contrib.sitemaps import Sitemap
-from resources.models import Resource, Page
 from django.utils import translation
+
+from HavelCMS.models import Resource, Page
 
 class ResourceSitemap(Sitemap):
 

@@ -6,7 +6,9 @@ from django.http import HttpResponsePermanentRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template.base import TemplateDoesNotExist
 from django.utils import translation
-from resources.models import Resource, Page
+
+from HavelCMS.models import Resource, Page
+
 
 def page(request):
     path = request.path.strip('/').split('/')
