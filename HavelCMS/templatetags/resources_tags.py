@@ -2,10 +2,11 @@ from django import template
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils import translation
-from resources.models import Page, ResourceCollection, ResourceCollectionItem, \
-    Resource
+
+from HavelCMS.models import Page, ResourceCollection, ResourceCollectionItem, Resource
 
 register = template.Library()
+
 
 @register.inclusion_tag('resources/menu.html', takes_context=True)
 def show_menu(context, onepage=False):

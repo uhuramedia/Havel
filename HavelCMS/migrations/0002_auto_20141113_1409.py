@@ -8,7 +8,7 @@ import ckeditor.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('resources', '0001_initial'),
+        ('HavelCMS', '0001_initial'),
     ]
 
     operations = [
