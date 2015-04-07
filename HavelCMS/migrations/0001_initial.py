@@ -2,11 +2,10 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import mptt.fields
+import ckeditor.fields
 import django.db.models.deletion
 from django.conf import settings
-import mptt.fields
-
-template_choices = [(x, y) for x, y in settings.RESOURCES_TEMPLATES]
 
 
 class Migration(migrations.Migration):
@@ -26,7 +25,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'File',
                 'verbose_name_plural': 'Files',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Resource',
@@ -53,22 +51,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Resource',
                 'verbose_name_plural': 'Resources',
             },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='Page',
-            fields=[
-                ('resource_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='resources.Resource')),
-                ('show_title', models.BooleanField(default=True)),
-                ('meta_summary', models.TextField(blank=True)),
-                ('text', models.TextField(blank=True)),
-                ('template', models.CharField(default=None, help_text='Inherit if empty', max_length=100, blank=True, choices=template_choices)),
-            ],
-            options={
-                'verbose_name': 'Page',
-                'verbose_name_plural': 'Page',
-            },
-            bases=('resources.resource',),
         ),
         migrations.CreateModel(
             name='ResourceCollection',
@@ -80,18 +62,14 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Resource collection',
                 'verbose_name_plural': 'Resource collections',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='ResourceCollectionItem',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('sort', models.PositiveSmallIntegerField()),
-                ('collection', models.ForeignKey(to='resources.ResourceCollection')),
+                ('collection', models.ForeignKey(to='HavelCMS.ResourceCollection')),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='ResourceProperty',
@@ -100,9 +78,6 @@ class Migration(migrations.Migration):
                 ('key', models.CharField(max_length=20)),
                 ('value', models.TextField()),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='ResourceTranslation',
@@ -113,52 +88,61 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Resource translation',
                 'verbose_name_plural': 'Resource translations',
             },
-            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Page',
+            fields=[
+                ('resource_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='HavelCMS.Resource')),
+                ('show_title', models.BooleanField(default=True)),
+                ('meta_summary', models.TextField(blank=True)),
+                ('text', ckeditor.fields.RichTextField(blank=True)),
+                ('template', models.CharField(default=None, help_text='Inherit if empty', max_length=100, blank=True, choices=[(b'default.html', b'Default CMS template')])),
+            ],
+            options={
+                'verbose_name': 'Page',
+                'verbose_name_plural': 'Page',
+            },
+            bases=('HavelCMS.resource',),
         ),
         migrations.CreateModel(
             name='Weblink',
             fields=[
-                ('resource_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='resources.Resource')),
+                ('resource_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='HavelCMS.Resource')),
                 ('target', models.CharField(max_length=255)),
             ],
             options={
                 'abstract': False,
             },
-            bases=('resources.resource',),
+            bases=('HavelCMS.resource',),
         ),
         migrations.AddField(
             model_name='resourceproperty',
             name='resource',
-            field=models.ForeignKey(to='resources.Resource'),
-            preserve_default=True,
-        ),
-        migrations.AlterUniqueTogether(
-            name='resourceproperty',
-            unique_together=set([('resource', 'key')]),
+            field=models.ForeignKey(to='HavelCMS.Resource'),
         ),
         migrations.AddField(
             model_name='resourcecollectionitem',
             name='resource',
-            field=models.ForeignKey(to='resources.Resource'),
-            preserve_default=True,
+            field=models.ForeignKey(to='HavelCMS.Resource'),
         ),
         migrations.AddField(
             model_name='resource',
             name='author',
             field=models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to=settings.AUTH_USER_MODEL, null=True),
-            preserve_default=True,
         ),
         migrations.AddField(
             model_name='resource',
             name='parent',
-            field=mptt.fields.TreeForeignKey(related_name=b'children', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='resources.Resource', null=True),
-            preserve_default=True,
+            field=mptt.fields.TreeForeignKey(related_name='children', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='HavelCMS.Resource', null=True),
         ),
         migrations.AddField(
             model_name='resource',
             name='translation_pool',
-            field=models.ForeignKey(editable=False, to='resources.ResourceTranslation', verbose_name='Translation pool'),
-            preserve_default=True,
+            field=models.ForeignKey(editable=False, to='HavelCMS.ResourceTranslation', verbose_name='Translation pool'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='resourceproperty',
+            unique_together=set([('resource', 'key')]),
         ),
         migrations.AlterUniqueTogether(
             name='resource',
