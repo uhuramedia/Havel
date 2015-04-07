@@ -170,7 +170,7 @@ class PageAdmin(admin.ModelAdmin):
 
     def __init__(self, *args, **kwargs):
         super(PageAdmin, self).__init__(*args, **kwargs)
-        setting = "RESOURCES_%s_TEXTWIDGET" % self.model._meta.module_name.upper()
+        setting = "RESOURCES_%s_TEXTWIDGET" % self.model._meta.model_name.upper()
         if hasattr(settings, setting):
             self.formfield_overrides = {
                 models.TextField: {'widget': get_class_from_string(getattr(settings, setting)) }
@@ -179,7 +179,7 @@ class PageAdmin(admin.ModelAdmin):
             overrides.update(self.formfield_overrides)
             self.formfield_overrides = overrides
 
-        setting = "RESOURCES_%s_INLINES" % self.model._meta.module_name.upper()
+        setting = "RESOURCES_%s_INLINES" % self.model._meta.model_name.upper()
         if hasattr(settings, setting):
             self.inlines = list(self.inlines)
             for i in getattr(settings, setting):
@@ -199,7 +199,7 @@ class WeblinkAdmin(ResourceAdmin):
     def __init__(self, *args, **kwargs):
         super(WeblinkAdmin, self).__init__(*args, **kwargs)
 
-        setting = "RESOURCES_%s_INLINES" % self.model._meta.module_name.upper()
+        setting = "RESOURCES_%s_INLINES" % self.model._meta.model_name.upper()
         if hasattr(settings, setting):
             self.inlines = list(self.inlines)
             for i in getattr(settings, setting):
