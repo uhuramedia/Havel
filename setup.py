@@ -14,6 +14,12 @@ setup(
     packages=find_packages(),
     namespace_packages = [],
     include_package_data = True,
+    package_data={
+        'HavelCMS': [
+        'locale/*/LC_MESSAGES/*',
+        'templates/resources/*',
+        ]
+    },
     zip_safe=False,
     license="None",
     install_requires=["django-mptt", "feincms", "django-ckeditor"]
