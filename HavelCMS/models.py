@@ -262,7 +262,7 @@ class Page(Resource):
         return render_to_string("resources/subnav.html", {'page': self, 'start': 2})
 
     def get_related_links(self):
-        return self.relatedlinks_set.all().select_subclasses()
+        return self.related_links.all().select_subclasses()
 
 
 class File(models.Model):
