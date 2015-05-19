@@ -2,12 +2,12 @@ import os
 from setuptools import setup, find_packages
 
 
-VERSION = "0.2"
+VERSION = "0.3"
 
 setup(
     name="HavelCMS",
     version = VERSION,
-    author="Julian Bez",
+    author="Julian Bez, Nar Chhantyal",
     author_email="julian@freshmilk.tv",
     url="https://github.com/Freshmilk/",
     description="""FM resource model""",
@@ -21,6 +21,6 @@ setup(
         ]
     },
     zip_safe=False,
-    license="None",
+    license="BSD",
     install_requires=["django-mptt", "feincms", "django-ckeditor"]
 )
