@@ -261,6 +261,9 @@ class Page(Resource):
     def subnav(self):
         return render_to_string("resources/subnav.html", {'page': self, 'start': 2})
 
+    def get_related_links(self):
+        return self.relatedlink_set.all().select_subclasses()
+
 
 class File(models.Model):
     data = models.FileField(upload_to="file")
