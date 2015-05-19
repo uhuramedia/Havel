@@ -31,7 +31,7 @@ class RelatedLink(models.Model):
 
 
 @python_2_unicode_compatible
-class WebLink(RelatedLink):
+class Link(RelatedLink):
     WEB = 'Web'
     EVE = 'Event'
 

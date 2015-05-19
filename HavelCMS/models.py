@@ -13,10 +13,12 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.generic import GenericRelation
 
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey
 from ckeditor.fields import RichTextField
+from HavelCMS.contrib.attachments.models import RelatedLink
 
 
 class cached_property(object):
@@ -233,6 +235,7 @@ class Page(Resource):
                                 choices=template_choices(),
                                 default=template_default(),
                                 help_text=_("Inherit if empty"))
+    related_links = GenericRelation(RelatedLink)
 
     class Meta:
         verbose_name = _(u'Page')

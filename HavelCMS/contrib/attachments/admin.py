@@ -2,11 +2,11 @@
 
 from django.contrib.contenttypes.admin import GenericTabularInline
 
-from .models import WebLink, FileLink
+from .models import Link, FileLink
 
 
 class WebLinkInline(GenericTabularInline):
-    model = WebLink
+    model = Link
     extra = 1
 
 
