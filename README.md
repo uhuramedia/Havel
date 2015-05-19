@@ -1,5 +1,5 @@
-Havel
-=====
+Havel CMS
+=========
 A basic Django based CMS
 
 Havel is a thin CMS app for Django. Its main thing is a `Resource` class that inherits from `MPTTModel` and is thus
@@ -12,14 +12,14 @@ is defined as string but can also be made as a ChoiceField by using the
 `RESOURCES_TEMPLATES` setting, that defines a list of `(template_path, template_name)`
 tuples.
 
-To use resources in your project, add it to INSTALLED_APPS and add the URL
+To use Havel in your project, add `HavelCMS` and `HavelCMS.contrib.attachments` to INSTALLED_APPS and add the URL
 
-    (r'^', include('resources.urls')),
+    (r'^', include('HavelCMS.urls')),
 
 This catches all URLs, parses them for slugs and tries to find the appropriate
 page in the tree. The page is then rendered using the specific template.
 
-Resources is a quick and simple way to have a tree of resources with configurable
+Havel is a quick and simple way to have a tree of resources with configurable
 templates, and have these rendered in the templates easily. If you have a use case
 like that, you don't need to write models, views and admin classes. Just use
-resources.
+this CMS.
