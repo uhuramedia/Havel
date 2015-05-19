@@ -5,7 +5,7 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 from .models import Link, FileLink
 
 
-class WebLinkInline(GenericTabularInline):
+class LinkInline(GenericTabularInline):
     model = Link
     extra = 1
 

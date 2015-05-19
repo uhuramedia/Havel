@@ -15,6 +15,8 @@ from mptt.forms import MPTTAdminForm, TreeNodeChoiceField
 from HavelCMS.models import ResourceProperty, Page, Weblink, Resource, \
     ResourceTranslation, ResourceCollection, ResourceCollectionItem, File
 
+from contrib.attachments.admin import FileLinkInline, LinkInline
+
 def get_class_from_string(str):
     path = str
     i = path.rfind('.')
@@ -148,7 +150,7 @@ class PageAdmin(admin.ModelAdmin):
                     'author')
     ordering = ('tree_id', 'lft')
     list_filter = ('is_published', 'in_menu', 'author', 'language')
-    inlines = (ResourcePropertyInline,)
+    inlines = (ResourcePropertyInline, LinkInline, FileLinkInline)
     prepopulated_fields = {'slug': ('title',)}
 
     fieldsets = (
