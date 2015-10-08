@@ -43,14 +43,14 @@ class FeinCMSModelAdmin(_feincms_tree_editor):
         actions = super(FeinCMSModelAdmin, self)._actions_column(obj)
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
-                urlresolvers.reverse('admin:resources_page_add'),
+                urlresolvers.reverse('admin:HavelCMS_page_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
                 _('+Page'),
                 _('+Page')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
-                urlresolvers.reverse('admin:resources_weblink_add'),
+                urlresolvers.reverse('admin:HavelCMS_weblink_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
                 _('+Weblink'),
@@ -141,7 +141,7 @@ class ResourceAdmin(FeinCMSModelAdmin):
 admin.site.register(Resource, ResourceAdmin)
 
 
-class PageAdmin(admin.ModelAdmin):
+class PageAdmin(FeinCMSModelAdmin):
     list_display = ('mptt_title',
                     'is_published',
                     'in_menu',
