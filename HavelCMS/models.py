@@ -134,7 +134,7 @@ class Resource(MPTTModel):
                 pass
         return MPTTModel.__getattribute__(self, name)
 
-    def get_date():
+    def get_date(self):
         if self.published:
             return self.published
         return self.created
