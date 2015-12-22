@@ -134,6 +134,11 @@ class Resource(MPTTModel):
                 pass
         return MPTTModel.__getattribute__(self, name)
 
+    def get_date():
+        if self.published:
+            return self.published
+        return self.created
+
     class Meta:
         verbose_name = _('Resource')
         verbose_name_plural = _('Resources')
