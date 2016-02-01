@@ -5,7 +5,8 @@ from django.contrib import admin
 from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
 from django.core import urlresolvers
 from django.db import models
-from django.utils.importlib import import_module
+#from django.utils.importlib import import_module
+from importlib import import_module
 from django.utils.translation import ugettext_lazy as _
 
 from feincms.admin.tree_editor import TreeEditor as _feincms_tree_editor
@@ -43,14 +44,14 @@ class FeinCMSModelAdmin(_feincms_tree_editor):
         actions = super(FeinCMSModelAdmin, self)._actions_column(obj)
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
-                urlresolvers.reverse('admin:resources_page_add'),
+                urlresolvers.reverse('admin:HavelCMS_page_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
                 _('+Page'),
                 _('+Page')))
         actions.insert(0,
             u'<a href="%s?%s=%s" title="%s">%s</a>' % (
-                urlresolvers.reverse('admin:resources_weblink_add'),
+                urlresolvers.reverse('admin:HavelCMS_weblink_add'),
                 self.model._mptt_meta.parent_attr,
                 obj.pk,
                 _('+Weblink'),
@@ -99,7 +100,7 @@ class ResourceAdmin(FeinCMSModelAdmin):
 
     def __init__(self, *args, **kwargs):
         super(ResourceAdmin, self).__init__(*args, **kwargs)
-        self.list_display_links = (None,)
+        #self.list_display_links = (None,)
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -141,7 +142,7 @@ class ResourceAdmin(FeinCMSModelAdmin):
 admin.site.register(Resource, ResourceAdmin)
 
 
-class PageAdmin(admin.ModelAdmin):
+class PageAdmin(FeinCMSModelAdmin):
     list_display = ('mptt_title',
                     'is_published',
                     'in_menu',

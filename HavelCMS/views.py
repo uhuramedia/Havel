@@ -4,7 +4,6 @@ from django.db.models import Q
 from django.conf import settings
 from django.http import HttpResponsePermanentRedirect, HttpResponse
 from django.shortcuts import render, get_object_or_404
-from django.template.base import TemplateDoesNotExist
 from django.utils import translation
 
 from HavelCMS.models import Resource, Page

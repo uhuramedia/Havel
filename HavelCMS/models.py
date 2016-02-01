@@ -13,7 +13,8 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.contenttypes.generic import GenericRelation
+#from django.contrib.contenttypes.generic import GenericRelation
+from django.contrib.contenttypes.fields import GenericRelation
 
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey

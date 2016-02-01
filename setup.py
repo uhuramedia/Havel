@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 
-VERSION = "0.3"
+VERSION = "0.4"
 
 setup(
     name="HavelCMS",
@@ -22,5 +22,5 @@ setup(
     },
     zip_safe=False,
     license="BSD",
-    install_requires=["django-mptt", "feincms", "django-ckeditor"]
+    install_requires=["django-mptt", "feincms", "django-ckeditor", "importlib"]
 )
