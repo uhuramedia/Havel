@@ -19,6 +19,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from mptt.managers import TreeManager
 from mptt.models import MPTTModel, TreeForeignKey
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from HavelCMS.contrib.attachments.models import RelatedLink
 
 
@@ -231,7 +232,7 @@ def template_default():
 class Page(Resource):
     show_title = models.BooleanField(default=True)
     meta_summary = models.TextField(blank=True)
-    text = RichTextField(blank=True)
+    text = RichTextUploadingField()
     template = models.CharField(max_length=100, blank=True,
                                 choices=template_choices(),
                                 default=template_default(),
