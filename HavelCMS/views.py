@@ -13,7 +13,7 @@ def page(request):
     path = request.path.strip('/').split('/')
     slug = path[-1]
     language = translation.get_language()
-    resource = get_object_or_404(Resource, slug=slug, language=language)
+    resource = get_object_or_404(Resource, slug=slug, language=language, is_published=True)
     if resource.get_absolute_url() != request.path:
         qs = "?" + request.META['QUERY_STRING'] if request.META['QUERY_STRING'] != "" else ""
         return HttpResponsePermanentRedirect(resource.get_absolute_url() + qs)
