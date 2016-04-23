@@ -167,7 +167,7 @@ class PageAdmin(FeinCMSModelAdmin):
         }),
          ('Other', {
             'classes': ('collapse',),
-            'fields': ('menu_title', 'meta_summary', 'noindex')
+            'fields': ('menu_title', 'meta_summary', 'noindex', 'page_image', 'page_mobile_image')
          }),
     )
 

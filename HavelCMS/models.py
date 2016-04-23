@@ -228,6 +228,10 @@ def template_default():
     except AttributeError:
         pass
 
+def page_image_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'pageimage/{0}/{1}'.format(instance.slug, filename)
+
 
 class Page(Resource):
     show_title = models.BooleanField(default=True)
@@ -237,6 +241,8 @@ class Page(Resource):
                                 choices=template_choices(),
                                 default=template_default(),
                                 help_text=_("Inherit if empty"))
+    page_image = models.ImageField(_("Page image"), upload_to=page_image_path, null=True, blank=True)
+    page_mobile_image = models.ImageField(_("Page mobile image"), upload_to=page_image_path, null=True, blank=True)
     related_links = GenericRelation(RelatedLink)
 
     class Meta:
