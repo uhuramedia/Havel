@@ -235,6 +235,7 @@ def page_image_path(instance, filename):
 
 class Page(Resource):
     show_title = models.BooleanField(default=True)
+    menu_order = models.PositiveIntegerField(default=1)
     meta_summary = models.TextField(blank=True)
     text = RichTextUploadingField()
     template = models.CharField(max_length=100, blank=True,
