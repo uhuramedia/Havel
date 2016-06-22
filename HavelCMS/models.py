@@ -47,7 +47,7 @@ class Resource(MPTTModel):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.SET_NULL)
     content_type = models.SlugField(editable=False)
 
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
     menu_title = models.CharField(max_length=100, blank=True)
     slug = models.SlugField(blank=True)
 
