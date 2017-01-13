@@ -1,5 +1,8 @@
 Havel CMS
 =========
+
+**This is not actively developed anymore. Please use Wagtail CMS instead https://wagtail.io**
+
 A basic Django based CMS
 
 Havel is a thin CMS app for Django. Its main thing is a `Resource` class that inherits from `MPTTModel` and is thus
